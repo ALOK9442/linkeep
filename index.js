@@ -1,11 +1,33 @@
 let myLinks = []
-
-
 const inputEl = document.getElementById("input-el")
 const inputBtn = document.getElementById("input-btn")
 const ulEl = document.getElementById("ul-el")
 const tabbtn = document.getElementById("tab-btn")
+// localStorage.clear()
 const deletebtn = document.getElementById("delete-btn")
+deletebtn.addEventListener("dblclick", function () {
+    localStorage.clear()
+    myLinks = []
+    render(myLinks)
+})
+
+inputBtn.addEventListener("click", function () {
+
+    myLinks.push(inputEl.value)
+    localStorage.setItem('myName', JSON.stringify(myLinks))
+    inputEl.value = ""
+    render(myLinks)
+})
+
+tabbtn.addEventListener("click", function () {
+
+    chrome.tabs.query({ active: true,currentWindow: true }, function (tabs) {
+        myLinks.push(tabs[0].url)
+        localStorage.setItem("myLinks", JSON.stringify(myLinks))
+        render(myLinks)
+        // localStorage.clear()
+    })
+})
 
 function render(links) {
     let listItems = ""
@@ -20,27 +42,3 @@ function render(links) {
     }
     ulEl.innerHTML = listItems
 }
-
-inputBtn.addEventListener("click", function () {
-    myLinks.push(inputEl.value)
-    localStorage.setItem('myName', JSON.stringify(myLinks))
-    inputEl.value = ""
-
-    render(myLinks)
-    // console.log(localStorage.getItem('myName'))
-})
-
-tabbtn.addEventListener("click", function () {
-
-    chrome.tabs.query({ active: true,currentWindow: true }, function (tabs) {
-        myLinks.push(tabs[0].url)
-        localStorage.setItem("myLinks", JSON.stringify(myLinks))
-        render(myLinks)
-    })
-})
-
-deletebtn.addEventListener("dblclick", function () {
-    localStorage.clear()
-    myLinks = []
-    render(myLinks)
-})
